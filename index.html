@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Spending - Wealth Magnet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .balance-gradient { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+        .tab-active { border-bottom: 3px solid #6366f1; color: #6366f1; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-item { animation: slideIn 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen shadow-2xl relative bg-slate-50 pb-10">
+
+    <div class="balance-gradient p-8 pb-16 rounded-b-[3rem] text-white shadow-lg relative z-10">
+        <div class="text-center py-4">
+            <p class="text-xs uppercase tracking-widest opacity-70 mb-1 font-bold">Saldo Kelimpahan Saya</p>
+            <h2 id="balance-text" class="text-4xl font-bold tracking-tight">Rp 0</h2>
+            <p class="text-[10px] mt-2 italic opacity-80">"Uang datang kepada saya dari berbagai sumber."</p>
+        </div>
+    </div>
+
+    <div class="flex justify-center gap-3 -mt-8 px-6 relative z-20">
+        <button onclick="toggleModal('topup-modal')" class="bg-white flex-1 p-3 rounded-2xl shadow-md flex flex-col items-center">
+            <div class="bg-green-100 text-green-600 p-2 rounded-full mb-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+            </div>
+            <span class="text-[10px] font-bold text-slate-600 uppercase">Top Up</span>
+        </button>
+        <button onclick="toggleModal('wishlist-modal')" class="bg-white flex-1 p-3 rounded-2xl shadow-md flex flex-col items-center border-2 border-indigo-100">
+            <div class="bg-indigo-100 text-indigo-600 p-2 rounded-full mb-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </div>
+            <span class="text-[10px] font-bold text-slate-600 uppercase">Tambah Wishlist</span>
+        </button>
+        <button onclick="toggleModal('spend-modal')" class="bg-white flex-1 p-3 rounded-2xl shadow-md flex flex-col items-center">
+            <div class="bg-blue-100 text-blue-600 p-2 rounded-full mb-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+            </div>
+            <span class="text-[10px] font-bold text-slate-600 uppercase">Spend</span>
+        </button>
+    </div>
+
+    <div class="flex mt-8 px-6 border-b border-slate-200">
+        <button onclick="switchTab('history')" id="tab-history" class="flex-1 py-2 font-bold text-sm tab-active">RIWAYAT</button>
+        <button onclick="switchTab('wishlist')" id="tab-wishlist" class="flex-1 py-2 font-bold text-sm text-slate-400">WISHLIST ✨</button>
+    </div>
+
+    <div id="section-history" class="px-6 mt-4 space-y-3">
+        <p id="empty-history" class="text-center text-slate-400 py-10 italic text-xs">Belum ada aliran dana...</p>
+    </div>
+
+    <div id="section-wishlist" class="px-6 mt-4 space-y-3 hidden">
+        <p id="empty-wishlist" class="text-center text-slate-400 py-10 italic text-xs">Ayo tulis impianmu di sini!</p>
+    </div>
+
+    <div id="wishlist-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div class="bg-white w-full rounded-3xl p-6 shadow-2xl">
+            <h3 class="text-xl font-bold mb-4 text-slate-800">Tulis Impian Baru 🖋️</h3>
+            <input type="text" id="wish-name" placeholder="Apa impianmu? (Mobil, Liburan, Tas)" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-3 mb-3 focus:border-indigo-500 outline-none">
+            <input type="number" id="wish-amount" placeholder="Harga Impian" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-3 mb-4 focus:border-indigo-500 outline-none">
+            <button onclick="addWish()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl">Simpan ke Alam Bawah Sadar</button>
+            <button onclick="toggleModal('wishlist-modal')" class="w-full text-slate-400 mt-3 text-sm">Nanti Saja</button>
+        </div>
+    </div>
+
+    <div id="topup-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-6"><div class="bg-white w-full rounded-3xl p-6"><h3 class="font-bold mb-4">Terima Kelimpahan ✨</h3><input type="number" id="topup-amount" placeholder="Nominal" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-3 mb-4 outline-none"><button onclick="processTopUp()" class="w-full bg-green-500 text-white font-bold py-3 rounded-xl">Tambahkan</button><button onclick="toggleModal('topup-modal')" class="w-full mt-2 text-slate-400 text-sm">Batal</button></div></div>
+    
+    <div id="spend-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-6"><div class="bg-white w-full rounded-3xl p-6"><h3 class="font-bold mb-4">Alirkan Berkat 🎁</h3><input type="text" id="spend-name" placeholder="Untuk apa?" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-3 mb-3 outline-none"><input type="number" id="spend-amount" placeholder="Nominal" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-3 mb-4 outline-none"><button onclick="processSpend()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl">Beli Sekarang</button><button onclick="toggleModal('spend-modal')" class="w-full mt-2 text-slate-400 text-sm">Batal</button></div></div>
+
+    <script>
+        let balance = 0;
+        const affirmations = [
+            "Uang yang saya keluarkan akan kembali 10x lipat! ✨",
+            "Saya layak menikmati hasil kelimpahan saya.",
+            "Semakin banyak saya memberi, semakin banyak yang datang.",
+            "Uang mengalir kepada saya dengan mudah dan menyenangkan.",
+            "Kekayaan saya terus bertumbuh setiap saat.",
+            "Saya bebas secara finansial dan hidup penuh syukur."
+        ];
+
+        function formatCurrency(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n); }
+
+        function updateUI() { document.getElementById('balance-text').innerText = formatCurrency(balance); }
+
+        function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+
+        function switchTab(tab) {
+            if(tab === 'history') {
+                document.getElementById('section-history').classList.remove('hidden');
+                document.getElementById('section-wishlist').classList.add('hidden');
+                document.getElementById('tab-history').classList.add('tab-active');
+                document.getElementById('tab-wishlist').classList.remove('tab-active');
+            } else {
+                document.getElementById('section-history').classList.add('hidden');
+                document.getElementById('section-wishlist').classList.remove('hidden');
+                document.getElementById('tab-wishlist').classList.add('tab-active');
+                document.getElementById('tab-history').classList.remove('tab-active');
+            }
+        }
+
+        function showAffirmation() {
+            const msg = affirmations[Math.floor(Math.random() * affirmations.length)];
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl text-xs z-[100] text-center w-[80%] animate-bounce";
+            toast.innerText = "✨ " + msg;
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 3500);
+        }
+
+        function processTopUp() {
+            const val = parseInt(document.getElementById('topup-amount').value);
+            if(val > 0) {
+                balance += val;
+                updateUI();
+                addHistory("Rejeki Masuk", val, 'in');
+                toggleModal('topup-modal');
+                document.getElementById('topup-amount').value = '';
+            }
+        }
+
+        function addHistory(name, amount, type) {
+            document.getElementById('empty-history').classList.add('hidden');
+            const item = document.createElement('div');
+            item.className = "flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-slate-100 animate-item";
+            item.innerHTML = `<div><p class="font-bold text-sm">${name}</p><p class="text-[9px] text-slate-400">${new Date().toLocaleTimeString()}</p></div>
+                              <p class="font-bold ${type==='in'?'text-green-500':'text-slate-700'}">${type==='in'?'+':'-'} ${formatCurrency(amount).replace('Rp','')}</p>`;
+            document.getElementById('section-history').prepend(item);
+        }
+
+        function addWish() {
+            const name = document.getElementById('wish-name').value;
+            const amount = parseInt(document.getElementById('wish-amount').value);
+            if(name && amount > 0) {
+                document.getElementById('empty-wishlist').classList.add('hidden');
+                const item = document.createElement('div');
+                item.className = "bg-white p-4 rounded-2xl shadow-sm border border-indigo-50 animate-item mb-3";
+                item.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="font-bold text-indigo-900">${name}</p>
+                        <p class="text-xs font-bold text-indigo-600">${formatCurrency(amount)}</p>
+                    </div>
+                    <button onclick="realizeWish('${name}', ${amount}, this)" class="w-full bg-indigo-50 text-indigo-600 text-[10px] font-bold py-2 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">WUDJUDKAN SEKARANG</button>
+                `;
+                document.getElementById('section-wishlist').prepend(item);
+                toggleModal('wishlist-modal');
+                document.getElementById('wish-name').value = '';
+                document.getElementById('wish-amount').value = '';
+            }
+        }
+
+        function realizeWish(name, amount, btn) {
+            if(balance >= amount) {
+                balance -= amount;
+                updateUI();
+                addHistory("Impian: " + name, amount, 'out');
+                showAffirmation();
+                btn.parentElement.remove();
+                if(document.getElementById('section-wishlist').children.length <= 1) {
+                    document.getElementById('empty-wishlist').classList.remove('hidden');
+                }
+            } else {
+                alert("Visualisasikan lebih banyak saldo agar impian ini segera terwujud! ✨");
+            }
+        }
+
+        function processSpend() {
+            const name = document.getElementById('spend-name').value;
+            const amount = parseInt(document.getElementById('spend-amount').value);
+            if(name && amount > 0 && balance >= amount) {
+                balance -= amount;
+                updateUI();
+                addHistory(name, amount, 'out');
+                showAffirmation();
+                toggleModal('spend-modal');
+                document.getElementById('spend-name').value = '';
+                document.getElementById('spend-amount').value = '';
+            } else if (balance < amount) {
+                alert("Saldo belum cukup untuk kelimpahan ini.");
+            }
+        }
+    </script>
+</body>
+</html>
