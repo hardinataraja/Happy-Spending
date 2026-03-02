@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6366f1">
+<link rel="apple-touch-icon" href="icon-512.svg">
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Spending - Wealth Magnet</title>
@@ -189,6 +193,12 @@
                 alert("Saldo belum cukup untuk kelimpahan ini.");
             }
         }
+        // Registrasi Service Worker untuk PWA
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+    .then(() => console.log("PWA Ready! ✨"));
+}
+        
     </script>
 </body>
 </html>
