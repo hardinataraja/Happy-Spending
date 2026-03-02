@@ -9,6 +9,8 @@
     <title>Happy Spending - Wealth Magnet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
         .balance-gradient { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
@@ -274,11 +276,42 @@
         }
 
         function clearHistory() {
-            if(confirm("Mulai hari baru? Riwayat akan dibersihkan, tapi saldo tetap aman.")) {
-                historyData = [];
-                renderHistory();
-            }
+    Swal.fire({
+        title: 'Mulai Hari Baru?',
+        text: "Riwayat aliran dana akan dibersihkan, namun saldo kelimpahan Anda tetap aman ✨",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#6366f1',
+        cancelButtonColor: '#cbd5e1',
+        confirmButtonText: 'Ya, Bersihkan!',
+        cancelButtonText: 'Batal',
+        background: '#ffffff',
+        borderRadius: '20px',
+        customClass: {
+            popup: 'rounded-3xl',
+            confirmButton: 'rounded-xl font-bold px-6 py-3',
+            cancelButton: 'rounded-xl font-bold px-6 py-3'
         }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proses pembersihan data
+            historyData = [];
+            renderHistory();
+            
+            // Notifikasi sukses yang cantik
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Lembaran baru telah dibuka. Siap menerima rejeki baru?',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false,
+                borderRadius: '20px'
+            });
+        }
+    });
+}
+
+        
     </script>
 </body>
 </html>
